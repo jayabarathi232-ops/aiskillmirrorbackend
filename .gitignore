@@ -1,0 +1,22 @@
+# Uploads directory - ignore user uploaded files but keep directory
+upload/*
+!upload/.gitkeep
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editor Files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs
+*.log
+error_log
+access_log

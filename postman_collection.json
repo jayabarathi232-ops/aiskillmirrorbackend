@@ -1,0 +1,786 @@
+{
+	"info": {
+		"_postman_id": "a8f3b2e1-4c5d-4e9a-9d22-skillmirror-api",
+		"name": "AI Skills Mirror - Complete Backend API Collection",
+		"description": "Complete collection of RESTful PHP APIs for AI Skills Mirror Android App. Includes Authentication, Profile Management, Dashboard, Assessments, Progress Analytics, AI Coach, Speech Studio, Milestones, and Settings.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost/skillmirrorbackend",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "1",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Signup (Create Account)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Maya Chen\",\n  \"email\": \"maya.chen@university.edu\",\n  \"password\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/signup.php",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"signup.php"
+							]
+						},
+						"description": "Registers a new user, hashes password with bcrypt, and automatically initializes an initial profile entry."
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"teststudent@example.com\",\n  \"password\": \"12345678\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login.php",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login.php"
+							]
+						},
+						"description": "Validates credentials against MySQL users table and returns authenticated user object (id, user_id, name, email)."
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password / Recovery",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"teststudent@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/recovery.php",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"recovery.php"
+							]
+						},
+						"description": "Generates a secure password reset token and stores it in password_resets."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Profile",
+			"item": [
+				{
+					"name": "Fetch Profile (GET)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/profile/profile_fetch.php?user_id={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"profile",
+								"profile_fetch.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						},
+						"description": "Fetches user details and profile info including phone, education, skills, career_goal, bio, and profile_picture."
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch Profile (POST)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": {{user_id}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/profile/profile_fetch.php",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"profile",
+								"profile_fetch.php"
+							]
+						},
+						"description": "Alternative POST endpoint for profile fetching."
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Profile Details",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": {{user_id}},\n  \"name\": \"Maya Chen\",\n  \"phone\": \"9876543210\",\n  \"education\": \"B.Sc. Computer Science · Class of 2027\",\n  \"skills\": \"Java, Kotlin, Python, MySQL\",\n  \"career_goal\": \"Graduate Software Engineer\",\n  \"bio\": \"Final-year Computer Science student passionate about mobile & AI applications.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/profile/profile_edit.php",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"profile",
+								"profile_edit.php"
+							]
+						},
+						"description": "Updates profile table and users table (for name). Automatically handles insertion if profile didn't exist."
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Profile Picture",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}",
+									"type": "text"
+								},
+								{
+									"key": "profile_picture",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/profile/profile_upload_picture.php",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"profile",
+								"profile_upload_picture.php"
+							]
+						},
+						"description": "Uploads profile photo via multipart/form-data (jpg/png/webp, max 5MB), saves to /upload/ directory, and stores path in MySQL."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Dashboard",
+			"item": [
+				{
+					"name": "Fetch Dashboard Data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/dashboard/dashboard_fetch.php?user_id={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard",
+								"dashboard_fetch.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						},
+						"description": "Returns userName, skillScore, monthlyPtsGain, streakDays, minutesToday, goalMinutesToday, assessedSkillsCount, and active training lesson."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Assessments",
+			"item": [
+				{
+					"name": "Fetch Skill Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/assessment/skills_fetch.php?user_id={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"assessment",
+								"skills_fetch.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						},
+						"description": "Fetches Communication, Technical skills, Problem solving, and Interview readiness categories with user's last scores."
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch Assessment Questions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/assessment/questions_fetch.php?skill_id=comm",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"assessment",
+								"questions_fetch.php"
+							],
+							"query": [
+								{
+									"key": "skill_id",
+									"value": "comm"
+								}
+							]
+						},
+						"description": "Returns questions, scenarios, topic badges, and options A-D for the chosen skill category."
+					},
+					"response": []
+				},
+				{
+					"name": "Submit Assessment Answers",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": {{user_id}},\n  \"skill_id\": \"comm\",\n  \"answers\": [\n    {\n      \"question_id\": 1,\n      \"selected_key\": \"B\"\n    },\n    {\n      \"question_id\": 2,\n      \"selected_key\": \"B\"\n    },\n    {\n      \"question_id\": 3,\n      \"selected_key\": \"B\"\n    },\n    {\n      \"question_id\": 4,\n      \"selected_key\": \"B\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/assessment/submit_assessment.php",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"assessment",
+								"submit_assessment.php"
+							]
+						},
+						"description": "Evaluates submitted answers, recalculates overall score, updates user_skills, stores attempt record, and updates user_metrics."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Progress & Results",
+			"item": [
+				{
+					"name": "Fetch Skill Mirror Results",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/progress/skill_mirror_fetch.php?user_id={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"progress",
+								"skill_mirror_fetch.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						},
+						"description": "Returns overall score, status badge, points gained since first assessment, skill scores breakdown, and personalized next move advice."
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch Progress Analytics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/progress/analytics_fetch.php?user_id={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"progress",
+								"analytics_fetch.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						},
+						"description": "Returns weekly/monthly points gain, total sessions, hours invested, and skill items for charting."
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch Growth Report",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/progress/growth_report_fetch.php?user_id={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"progress",
+								"growth_report_fetch.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						},
+						"description": "Returns baseline vs current score comparisons, biggest breakthrough skill, and points gained."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Roadmap & Training",
+			"item": [
+				{
+					"name": "Fetch Growth Roadmap",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/roadmap/roadmap_fetch.php?user_id={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roadmap",
+								"roadmap_fetch.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						},
+						"description": "Returns personalized 4-week growth plan, active step progress, and upcoming week modules."
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch Daily Training",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/training/training_fetch.php?user_id={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"training",
+								"training_fetch.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						},
+						"description": "Returns daily streak, practice goal minutes, completed practice sessions, and up next lesson."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "7. Speech Studio & Analysis",
+			"item": [
+				{
+					"name": "Fetch Speech Studio Data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/speech/speech_studio_fetch.php?user_id={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"speech",
+								"speech_studio_fetch.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						},
+						"description": "Returns speech prompt quote, instructions, session count, and recording guidelines."
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch Speech Analysis",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/speech/speech_analysis_fetch.php?user_id={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"speech",
+								"speech_analysis_fetch.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						},
+						"description": "Returns pronunciation, fluency, and clarity scores, transcript highlights, and AI feedback tip."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "8. Milestones & Achievements",
+			"item": [
+				{
+					"name": "Fetch Milestones & Goals",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/milestones/milestones_fetch.php?user_id={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"milestones",
+								"milestones_fetch.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						},
+						"description": "Returns main target goal, streak progress towards 14 days, earned badges, next reward target, and total XP."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "9. Notifications",
+			"item": [
+				{
+					"name": "Fetch Notifications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/notifications/notifications_fetch.php?user_id={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"notifications_fetch.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						},
+						"description": "Returns categorized notifications for Today and Yesterday with badges and reminder settings."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "10. AI Coach Mira",
+			"item": [
+				{
+					"name": "Fetch Coach Chat History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/coach/coach_chat_fetch.php?user_id={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"coach",
+								"coach_chat_fetch.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						},
+						"description": "Returns conversation history with Mira the AI coach, personalized status, and suggested prompt chips."
+					},
+					"response": []
+				},
+				{
+					"name": "Send Message to AI Coach",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": {{user_id}},\n  \"message\": \"Can you give me an example of how to answer using the STAR method?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/coach/coach_send_message.php",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"coach",
+								"coach_send_message.php"
+							]
+						},
+						"description": "Stores user message in coach_messages, generates an intelligent contextual response from Mira, and returns both."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "11. Settings",
+			"item": [
+				{
+					"name": "Fetch User Settings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/settings/settings_fetch.php?user_id={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"settings",
+								"settings_fetch.php"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						},
+						"description": "Returns user preference toggles (learning reminders, personalized AI, save voice recordings) and appearance/language settings."
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Settings",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": {{user_id}},\n  \"isLearningRemindersEnabled\": true,\n  \"isPersonalizedAiEnabled\": true,\n  \"isSaveVoiceRecordingsEnabled\": false,\n  \"currentAppearanceText\": \"Dark\",\n  \"currentLanguageText\": \"English\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/settings/settings_update.php",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"settings",
+								"settings_update.php"
+							]
+						},
+						"description": "Persists updated preference toggles into user_settings table in MySQL."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
+
