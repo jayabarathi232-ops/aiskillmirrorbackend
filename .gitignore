@@ -1,5 +1,7 @@
-# Uploads directory - ignore user uploaded files but keep directory
-upload/*
+# Uploads directory - ignore user uploaded files but keep PHP endpoints & directory
+upload/performances/*
+upload/*.*
+!upload/*.php
 !upload/.gitkeep
 
 # Operating System Files
