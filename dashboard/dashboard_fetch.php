@@ -45,7 +45,6 @@ try {
     $mStmt->close();
 
     if (!$metrics) {
-        // Default initial metrics
         $ins = $conn->prepare("INSERT INTO user_metrics (user_id) VALUES (?)");
         $ins->bind_param("i", $userId);
         $ins->execute();
@@ -84,11 +83,54 @@ try {
     $lessonCat = $activeLesson["category"] ?? "Communication · Lesson 3 of 5";
     $lessonDur = $activeLesson["duration_text"] ?? "6 min";
 
+    // 5. Lessons counts and progress
+    $cntStmt = $conn->prepare("
+        SELECT 
+            COUNT(*) AS total, 
+            SUM(CASE WHEN is_completed = 1 THEN 1 ELSE 0 END) AS completed 
+        FROM user_lessons 
+        WHERE user_id = ?
+    ");
+    $cntStmt->bind_param("i", $userId);
+    $cntStmt->execute();
+    $cRow = $cntStmt->get_result()->fetch_assoc();
+    $cntStmt->close();
+
+    $totalLessons = (int)($cRow["total"] ?? 5);
+    $completedLessons = (int)($cRow["completed"] ?? 2);
+    $remainingLessons = max(0, $totalLessons - $completedLessons);
+    $progressFloat = $totalLessons > 0 ? (float)round($completedLessons / $totalLessons, 2) : 0.6;
+
+    // 6. Profile picture
+    $pStmt = $conn->prepare("SELECT profile_picture FROM profiles WHERE user_id = ?");
+    $pStmt->bind_param("i", $userId);
+    $pStmt->execute();
+    $prof = $pStmt->get_result()->fetch_assoc();
+    $pStmt->close();
+    $profilePicture = $prof["profile_picture"] ?? "";
+
+    // 7. Greeting & Date
+    $hour = (int)date('G');
+    if ($hour < 12) {
+        $greeting = "Good morning";
+    } elseif ($hour < 17) {
+        $greeting = "Good afternoon";
+    } else {
+        $greeting = "Good evening";
+    }
+    $currentDateText = date('l, F j');
+
+    // 8. Learning plan title
+    $currentPlanTitle = "Career-ready roadmap · Week 2 of 4";
+
     echo json_encode([
         "status" => "success",
         "message" => "Dashboard fetched successfully",
         "data" => [
             "userName" => $user["name"],
+            "greeting" => $greeting,
+            "currentDateText" => $currentDateText,
+            "profilePicture" => $profilePicture,
             "skillScore" => (int)$metrics["skill_score"],
             "monthlyPtsGain" => (int)$metrics["monthly_pts_gain"],
             "currentStreakDays" => (int)$metrics["streak_days"],
@@ -99,7 +141,11 @@ try {
             "currentLessonTitle" => $lessonTitle,
             "currentLessonCategory" => $lessonCat,
             "currentLessonDuration" => $lessonDur,
-            "currentLessonProgress" => 0.6,
+            "currentLessonProgress" => $progressFloat,
+            "completedLessonsCount" => $completedLessons,
+            "totalLessonsCount" => $totalLessons,
+            "remainingLessonsCount" => $remainingLessons,
+            "currentPlanTitle" => $currentPlanTitle,
             "aiCoachTitle" => "Your AI coach is ready",
             "aiCoachSubtitle" => "\"Let's build on your interview skills.\""
         ]
@@ -112,4 +158,3 @@ try {
 
 $conn->close();
 ?>
-

@@ -20,3 +20,7 @@ desktop.ini
 *.log
 error_log
 access_log
+
+# Database local dumps
+database/backups/
+*.sql.bak
